@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int longestUniqueSubstring(char *S) {
+    int n = strlen(S);
+    int maxLength = 0;
+    
+    int lastSeen[26];
+    for (int i = 0; i < 26; i++) {
+        lastSeen[i] = -1;
+    }
+    
+    int left = 0;
+    
+    for (int right = 0; right < n; right++) {
+        int charIndex = S[right] - 'a'; 
+        
+        if (lastSeen[charIndex] >= left) {
+            
+            left = lastSeen[charIndex] + 1;
+        }
+        
+        
+        lastSeen[charIndex] = right;
+        
+        int currentLength = right - left + 1;
+        if (currentLength > maxLength) {
+            maxLength = currentLength;
+        }
+    }
+    
+    return maxLength;
+}
+
+int main() {
+   
+    char *S = (char *)malloc(100006 * sizeof(char));
+    if (S == NULL) {
+        return 1;
+    }
+
+    if (scanf("%100005s", S) != 1) {
+        free(S);
+        return 1;
+    }
+
+    int result = longestUniqueSubstring(S);
+    printf("%d\n", result);
+    free(S);
+    return 0;
+}
