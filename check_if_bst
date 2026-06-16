@@ -1,0 +1,26 @@
+#include <stdio.h>
+#include <limits.h>
+#include <stdbool.h>
+
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+bool isBSTUtil(struct Node* node, long long min_val, long long max_val) {
+    if (node == NULL) {
+        return true;
+    }
+
+    if (node->data <= min_val || node->data >= max_val) {
+        return false;
+    }
+
+    return isBSTUtil(node->left, min_val, node->data) &&
+           isBSTUtil(node->right, node->data, max_val);
+}
+
+int isBST(struct Node* root) {
+    return isBSTUtil(root, LLONG_MIN, LLONG_MAX) ? 1 : 0;
+}
