@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define MAX_LIMIT 1000
+
+void compress_string(const char *src, char *dest) {
+    int len = strlen(src);
+    if (len == 0) {
+        dest[0] = '\0';
+        return;
+    }
+
+    int dest_idx = 0;
+    char current_char = src[0];
+    int count = 1;
+
+    for (int i = 1; i <= len; i++) {
+        if (src[i] == current_char) {
+            count++;
+        } else {
+            dest[dest_idx++] = current_char;
+            if (count > 1) {
+                dest_idx += sprintf(&dest[dest_idx], "%d", count);
+            }
+            current_char = src[i];
+            count = 1;
+        }
+    }
+    dest[dest_idx] = '\0';
+}
+void decompress_string(const char *src, char *dest) {
+    int len = strlen(src);
+    int dest_idx = 0;
+    int i = 0;
+
+    while (i < len) {
+        char current_char = src[i++];
+        int count = 0;
+
+        while (i < len && isdigit(src[i])) {
+            count = count * 10 + (src[i] - '0');
+            i++;
+        }
+
+        if (count == 0) {
+            count = 1;
+        }
+
+        for (int j = 0; j < count; j++) {
+            dest[dest_idx++] = current_char;
+        }
+    }
+    dest[dest_idx] = '\0';
+}
+
+int main() {
+    char original[MAX_LIMIT];
+    char compressed[MAX_LIMIT * 2]; 
+    char decompressed[MAX_LIMIT];
+    printf("Enter a string to compress (e.g., AAACCCBBD): ");
+    if (fgets(original, sizeof(original), stdin) == NULL) {
+        return 1;
+    }
+    original[strcspn(original, "\n")] = '\0';
+    compress_string(original, compressed);
+    printf("\n--- Results ---\n");
+
+    printf("Original Input: %s\n", original);
+    printf("Compressed:     %s\n", compressed);
+
+    decompress_string(compressed, decompressed);
+    printf("Decompressed:   %s\n", decompressed);
+
+    return 0;
+}
